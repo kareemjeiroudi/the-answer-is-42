@@ -58,7 +58,6 @@ public class AnswerIs42 {
                     Answer answer = new Answer(matcher.group());
                     answers.add(answer);
                 } catch (InvalidAnswerException e) {
-                    continue;
                 }
             }
             i++;
