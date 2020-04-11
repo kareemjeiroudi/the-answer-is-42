@@ -20,7 +20,7 @@ public class Question {
             throw new InvalidQuestionException("Questions must contain at least one character");
         }
         this.questionStatement = questionStatement;
-        this.answers = new ArrayList<Answer>();
+        this.answers = new ArrayList<>();
     }
 
     public Question(String questionStatement, List<Answer> answers) throws InvalidQuestionException {
@@ -34,6 +34,24 @@ public class Question {
     @Override
     public String toString() {
         return this.questionStatement;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Question)) {
+            return false;
+        }
+        // typecast o to Question so that we can compare question statements
+        Question q = (Question) o;
+        // Compare the data members and return accordingly
+        return q.getQuestionStatement().equals(this.questionStatement);
+    }
+
+    public String getQuestionStatement() {
+        return questionStatement;
     }
 
     public void add(Answer answer) {

@@ -4,8 +4,9 @@ import com.kareemjeiroudi.models.AnswerIs42;
 
 public class Main {
   public static void main(String[] args) {
-    while (true) {
-      new AnswerIs42().run();
+    AnswerIs42 ai42 = new AnswerIs42();
+    while (true) { // no terminal condition
+      ai42.run();
     }
   }
 }

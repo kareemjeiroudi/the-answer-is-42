@@ -43,23 +43,27 @@ public class AnswerIs42 {
 
     private void printAnswers(final List<Answer> answers) {
         for (Answer answer: answers) {
-            System.out.println(answer);
+            System.out.println("* " + answer);
         }
     }
 
     private List<Answer> extractAnswers(final String input) {
         List<Answer> answers = new ArrayList<>();
-        // any character that's preceded and followed by "
-        Matcher matcher = Pattern.compile("(?<=\").(?=\")").matcher(input);
-        for (int i=0; i<matcher.groupCount(); i++) {
-            try {
-                Answer answer = new Answer(matcher.group(i));
-                answers.add(answer);
-            } catch (InvalidAnswerException e) {
-                continue;
+        String rawPattern = "(?<=\")[^\"]*(?=\")"; // any character that's preceded and followed by "
+        Matcher matcher = Pattern.compile(rawPattern).matcher(input);
+        int i = 0;
+        while (matcher.find()) {
+            if (i%2 == 0) { // get only every second match
+                try {
+                    Answer answer = new Answer(matcher.group());
+                    answers.add(answer);
+                } catch (InvalidAnswerException e) {
+                    continue;
+                }
             }
+            i++;
         }
-        return answers; // possibly empty if all provided answers are invalid
+        return answers;
     }
 
     /**
