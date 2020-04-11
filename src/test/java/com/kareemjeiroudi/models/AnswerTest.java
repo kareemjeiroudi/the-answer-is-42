@@ -6,7 +6,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Random;
 
@@ -39,10 +41,17 @@ public class AnswerTest {
             .toString();
     }
 
-    @Test(expected = InvalidAnswerException.class)
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+    @Test
     public void ConstructorThrowsInvalidAnswerExceptionWhenMaxLengthIsExceeded() throws InvalidAnswerException {
         // generate a randomString whose minimum length is the maximum allowed length to an answer
+        expectedEx.expect(InvalidAnswerException.class);
+        expectedEx.expectMessage(String.format("Answer is too long! max length %d", Answer.MAX_LENGTH));
         String randomString = randomString(Answer.MAX_LENGTH, 1000);
+        new Answer(randomString);
+        randomString = randomString(Answer.MAX_LENGTH, 1000);
         new Answer(randomString);
     }
 

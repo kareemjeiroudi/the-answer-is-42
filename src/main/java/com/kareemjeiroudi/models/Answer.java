@@ -7,7 +7,7 @@ public class Answer {
 
     public Answer(String s) throws InvalidAnswerException {
         if (s.length() > MAX_LENGTH) {
-            throw new InvalidAnswerException(String.format("com.kareemjeiroudi.models.Answer is too long! max length %d", MAX_LENGTH));
+            throw new InvalidAnswerException(String.format("Answer is too long! max length %d", MAX_LENGTH));
         }
         if (s.isEmpty()) {
             throw new InvalidAnswerException("Answer must contain at least one character!");

@@ -30,7 +30,7 @@ public class AnswerIs42 {
                 int index = storedQuestions.indexOf(question);
                 answers = index == -1 ? // if question not found
                         Arrays.asList(
-                                new Answer[]{new Answer("the answer to life, universe and everything is 42")}
+                                new Answer("the answer to life, universe and everything is 42")
                         ) :
                         storedQuestions.get(index).getAnswers();
                 printAnswers(answers);
@@ -51,6 +51,7 @@ public class AnswerIs42 {
         List<Answer> answers = new ArrayList<>();
         String rawPattern = "(?<=\")[^\"]*(?=\")"; // any character that's preceded and followed by "
         Matcher matcher = Pattern.compile(rawPattern).matcher(input);
+        // TODO: while loop could be written in a better way
         int i = 0;
         while (matcher.find()) {
             if (i%2 == 0) { // get only every second match
@@ -74,7 +75,6 @@ public class AnswerIs42 {
      * @return String array whose elements are substrings starting and ending with a '?'
      * @throws IllegalArgumentException if stripped string is empty.
      */
-    @VisibleForTesting
     private String[] processInput(final String input) throws IllegalArgumentException {
         String stripped = StringUtils.strip(input, "? ");
         return stripped.split("\\?"); // split by '?'
