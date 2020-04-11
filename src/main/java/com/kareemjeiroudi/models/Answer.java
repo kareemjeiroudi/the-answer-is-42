@@ -9,6 +9,9 @@ public class Answer {
         if (s.length() > MAX_LENGTH) {
             throw new InvalidAnswerException(String.format("com.kareemjeiroudi.models.Answer is too long! max length %d", MAX_LENGTH));
         }
+        if (s.isEmpty()) {
+            throw new InvalidAnswerException("Answer must contain at least one character!");
+        }
         this.s = s;
     }
 

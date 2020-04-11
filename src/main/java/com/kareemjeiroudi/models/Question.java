@@ -16,8 +16,19 @@ public class Question {
         if (questionStatement.length() > MAX_LENGTH) {
             throw new InvalidQuestionException(String.format("Question is too long! Max length is %d", MAX_LENGTH));
         }
+        if (questionStatement.isEmpty()) {
+            throw new InvalidQuestionException("Questions must contain at least one character");
+        }
         this.questionStatement = questionStatement;
-        answers = new ArrayList<Answer>();
+        this.answers = new ArrayList<Answer>();
+    }
+
+    public Question(String questionStatement, List<Answer> answers) throws InvalidQuestionException {
+        this(questionStatement);
+        if (answers.isEmpty()) {
+            throw new IllegalArgumentException("Questions must have at least one answers");
+        }
+        this.answers = answers;
     }
 
     @Override
