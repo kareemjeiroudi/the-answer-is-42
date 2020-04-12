@@ -1,6 +1,5 @@
 package com.kareemjeiroudi.models;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -8,10 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AnswerIs42 {
-    private List<Question> storedQuestions = new ArrayList<>();
+    private Map<Question, List<Answer>> storedQuestions = new HashMap();
     private Scanner scanner = new Scanner(System.in);
 
-    public void run() {
+    public void run() throws IllegalFormatException{
         System.out.println("Ask a question or add new one: ");
         // get next input string
         String input = scanner.nextLine();
@@ -22,17 +21,18 @@ public class AnswerIs42 {
                         // cut the question off the input string
                         input.substring(input.indexOf('?'))
                 );
-                Question question = new Question(processedInput[0], answers);
-                storedQuestions.add(question);
+                if (answers.isEmpty()) {
+                    throw new InvalidFormattingException("Answers must be enclosed in quotation marks!");
+                }
+                Question question = new Question(processedInput[0]);
+                storedQuestions.put(question, answers);
             } else if (isAskQuestionOption(processedInput)) {
                 Question question = new Question(processedInput[0]);
-                List<Answer> answers;
-                int index = storedQuestions.indexOf(question);
-                answers = index == -1 ? // if question not found
-                        Arrays.asList(
-                                new Answer("the answer to life, universe and everything is 42")
-                        ) :
-                        storedQuestions.get(index).getAnswers();
+                List<Answer> answers = storedQuestions.get(question);
+                if (answers == null) {
+                    answers = new ArrayList<>();
+                    answers.add(new Answer("the answer to life, universe and everything is 42"));
+                }
                 printAnswers(answers);
             }
         // TODO: remove all other types of exceptions make both Question and Answer throw IllegalArgumentException
@@ -80,12 +80,10 @@ public class AnswerIs42 {
         return stripped.split("\\?"); // split by '?'
     }
 
-    @VisibleForTesting
     private Boolean isAddQuestionOption(final String[] processedInput) {
         return processedInput.length > 1;
     }
 
-    @VisibleForTesting
     private Boolean isAskQuestionOption(final String[] processedInput) {
         return processedInput.length == 1;
     }
