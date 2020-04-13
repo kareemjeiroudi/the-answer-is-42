@@ -84,8 +84,9 @@ this will chop  `help me!` off the first answer
 
 A question is always identified by the literals found before the first occurence of a question mark. When asking a 
 question It's important that you do not provide anything after a question mark in your input, as this will make it 
-look like  **[adding a question](#add-a-question)**. Having done so, it will result in adding an invalid question, 
-which <u>won't</u> be stored in the list of questions - unless of course it matches the formatting discussed earlier in [adding a question](#add-a-question). I.e.
+look like  **[adding a question](#1-add-a-question)**. Having done so, it will result in adding an invalid question, 
+which <u>won't</u> be stored in the list of questions - unless of course it matches the formatting discussed earlier 
+in [adding a question](#1-add-a-question). I.e.
 
 ```
 Where's my car?     // is considered asking a question option ✔
