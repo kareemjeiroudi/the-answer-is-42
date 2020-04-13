@@ -9,14 +9,12 @@ public class Question {
     private String questionStatement;
 
     public Question(String questionStatement) throws InvalidQuestionException {
+        // questionStatement can never be null by the caller !
         if (questionStatement.length() > MAX_LENGTH) {
             throw new InvalidQuestionException(String.format("Question is too long! Max length is %d", MAX_LENGTH));
         }
-        if (questionStatement.isEmpty()) {
+        if (questionStatement.isEmpty() | questionStatement.isBlank()) {
             throw new InvalidQuestionException("Questions must contain at least one character!");
-        }
-        if (questionStatement == null) {
-            throw new NullPointerException();
         }
         this.questionStatement = questionStatement;
     }
@@ -35,16 +33,13 @@ public class Question {
 
         Question question = (Question) o;
 
-        return questionStatement.equals(question.questionStatement);
+        return questionStatement != null ? questionStatement.equals(question.questionStatement) :
+                question.questionStatement == null;
     }
 
     @Override
     public int hashCode() {
         return questionStatement.hashCode();
-    }
-
-    public String getQuestionStatement() {
-        return questionStatement;
     }
 
 }

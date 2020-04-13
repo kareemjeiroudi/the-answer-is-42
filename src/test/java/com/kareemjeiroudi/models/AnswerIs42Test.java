@@ -2,103 +2,157 @@ package com.kareemjeiroudi.models;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.kareemjeiroudi.models.AnswerIs42;
-import com.kareemjeiroudi.models.InvalidQuestionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AnswerIs42Test {
 
     private AnswerIs42 ai42;
+    private static Method processInput;
+    private static Method extractAnswers;
+
+    private PrintStream printStream;
+
+
+    @BeforeClass
+    public static void setup() {
+        try {
+            /*
+            Generally said, it's a bad practice to test private methods. However, for the sake of fun.
+             */
+            processInput = AnswerIs42.class.getDeclaredMethod("processInput", String.class);
+            processInput.setAccessible(true);
+            extractAnswers = AnswerIs42.class.getDeclaredMethod("extractAnswers", String.class);
+            extractAnswers.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Before
     public void init() {
-     ai42 = new AnswerIs42();
+        ByteArrayInputStream inStream = new ByteArrayInputStream("q? \"a\" \"b\"".getBytes());
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+        printStream = new PrintStream(outStream);
+        ai42 = new AnswerIs42(inStream, printStream);
     }
 
     @Test
-    public void processInputReturnsOneElementArrayWhenInputHasTrailingOrLeadingWhitespaces() { }
+    public void processInputReturnsOneElementArrayWhenInputHasTrailingOrLeadingWhitespaces() {
+        try {
+            assertArrayEquals(
+                    new String[]{"great question"},
+                    (String[]) processInput.invoke(ai42, "   great question ")
+            );
+            assertArrayEquals(
+                    new String[]{"who's there"},
+                    (String[]) processInput.invoke(ai42, "   who's there ")
+            );
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Test
+    public void processInputWorksWithQuestionsContainingLeadingAndTrailingQuestionMarks() {
+        try {
+            assertArrayEquals(
+                    new String[]{"great question"},
+                    (String[]) processInput.invoke(ai42, "   great question? ")
+            );
+            assertArrayEquals(
+                    new String[]{"who's there"},
+                    (String[]) processInput.invoke(ai42, "??   who's there? ")
+            );
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * processInput should return an array of type String[] of size equal to n+1,
-     * where n is the number of question marks '?' in the string.
+     * where n is the number of question marks '?' in the trimmed string.
      * I.e. when "   great question?b " is input, we expect --> ["great question", "b"]
      */
     @Test
     public void processInputReturnsTrimmedSplittedStringArraysOfCorrespondingSizesAndValues() {
         try {
-            /*
-            Generally said, it's a bad practice to test private methods. However, for the sake of fun.
-             */
-            Method processInput = AnswerIs42.class.getDeclaredMethod("processInput", String.class);
-            processInput.setAccessible(true);
             assertArrayEquals(
-                new String[]{"great question", "b"},
-                (String[]) processInput.invoke(ai42, "   great question?b ")
+                    new String[]{"great question", "b"},
+                    (String[]) processInput.invoke(ai42, "   great question?b ")
+            );
+
+            assertArrayEquals(
+                    new String[]{"great question", "b"},
+                    (String[]) processInput.invoke(ai42, "???great question?b?? ")
             );
             assertArrayEquals(
-                new String[]{"great question", "b"},
-                (String[]) processInput.invoke(ai42, "great question?b")
+                    new String[]{"great question", " afds:"},
+                    (String[]) processInput.invoke(ai42, "great question? afds:")
             );
             assertArrayEquals(
-                new String[]{"great question", " afds:"},
-                (String[]) processInput.invoke(ai42, "great question? afds:")
+                    new String[]{"great question", " \"<answer1>\" \"<answer2>\"  \"<answerX>\""},
+                    (String[]) processInput.invoke(ai42, "great question? \"<answer1>\" \"<answer2>\"  \"<answerX>\"  ")
             );
             assertArrayEquals(
-                new String[]{"great question", " \"<answer1>\" \"<answer2>\"  \"<answerX>\""},
-                (String[]) processInput.invoke(ai42, "great question? \"<answer1>\" \"<answer2>\"  \"<answerX>\"  ")
+                    new String[]{"great question", " adsf", "fdsa"},
+                    (String[]) processInput.invoke(ai42, "great question? adsf?fdsa ")
             );
-            assertArrayEquals(
-                new String[]{"great question", " adsf", "fdsa"},
-                (String[]) processInput.invoke(ai42, "great question? adsf?fdsa ")
-            );
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            System.err.println(e.getMessage());
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            ex.printStackTrace();
         }
     }
 
-//
-//    @Test(expected = InvalidQuestionException.class)
-//    public void processInputThrowsExceptionIfInputHasNoQuestionMark() throws InvalidQuestionException {
-//        ai42.processInput("I am an invalid question ");
-//    }
-//
-//    @Test
-//    public void isAddOptionReturnsTrueWhenProcessedInputHasMoreThanOneElement() throws InvalidQuestionException {
-//        String[] processedInput = {"great question", " \"<answer1>\" \"<answer2>\"  \"<answerX>\""};
-//        assertTrue(AnswerIs42.isAddOption(processedInput));
-//        processedInput = new String[]{"great question", " afds:"};
-//        assertTrue(AnswerIs42.isAddOption(processedInput));
-//    }
-//
-//    @Test
-//    public void isAddOptionReturnsFalseWhenProcessedInputHasOneElementOrLess() throws InvalidQuestionException {
-//        assertFalse(AnswerIs42.isAddOption(new String[] {"great question"})); // one element
-//        assertFalse(AnswerIs42.isAddOption(new String[0])); // empty array
-//    }
-//
-//    @Test
-//    public void isAskOptionReturnsTrueWhenProcessedInputHasExactlyOneElement() throws InvalidQuestionException {
-//        assertTrue(AnswerIs42.isAskOption(new String[]{"great question"}));
-//    }
-//
-//    @Test
-//    public void isAskOptionReturnsFalseWhenProcessedInputHasZeroElements() throws InvalidQuestionException {
-//        assertFalse(AnswerIs42.isAskOption(new String[0]));
-//    }
-//
-//    @Test
-//    public void isAskOptionReturnsFalseWhenProcessedInputHasMoreThanOneElement() throws InvalidQuestionException {
-//        assertFalse(AnswerIs42.isAskOption(new String[]{"great question", " adsf", "fdsa"}));
-//    }
+    @Test
+    public void extractAnswersIgnoresEmptyAnswers() {
+        try {
+            List<Answer> actual = (List<Answer>) extractAnswers.invoke(ai42, "\"a\"\"b\" \"\"");
+            List<Answer> expected = new ArrayList<>();
+            expected.add(new Answer("a"));
+            expected.add(new Answer("b"));
+            assertEquals(expected, actual);
+        } catch (IllegalAccessException | InvocationTargetException | InvalidAnswerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void extractAnswersIgnoresBlankAnswers() {
+        try {
+            List<Answer> actual = (List<Answer>) extractAnswers.invoke(ai42, "\"a\"\"b\" \"   \"");
+            List<Answer> expected = new ArrayList<>();
+            expected.add(new Answer("a"));
+            expected.add(new Answer("b"));
+            assertEquals(expected, actual);
+
+            actual = (List<Answer>) extractAnswers.invoke(ai42, "\"   \"\"a \"\"b \" \"   \"");
+            expected = new ArrayList<>();
+            expected.add(new Answer("a "));
+            expected.add(new Answer("b "));
+            assertEquals(expected, actual);
+        } catch (IllegalAccessException | InvocationTargetException | InvalidAnswerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void printStreamCarriesExpectedOutput() {
+        ai42.run();
+        System.out.println(printStream.toString());
+    }
+
 }
 

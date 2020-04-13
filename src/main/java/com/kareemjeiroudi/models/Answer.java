@@ -17,6 +17,21 @@ public class Answer {
 
     @Override
     public String toString() {
-      return this.s;
+      return s;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Answer answer = (Answer) o;
+
+        return s != null ? s.equals(answer.s) : answer.s == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return s != null ? s.hashCode() : 0;
     }
 }

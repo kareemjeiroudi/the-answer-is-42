@@ -2,15 +2,24 @@ package com.kareemjeiroudi.models;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.*;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 public class AnswerIs42 {
-    private Map<Question, List<Answer>> storedQuestions = new HashMap();
-    private Scanner scanner = new Scanner(System.in);
+    private Map<Question, List<Answer>> storedQuestions;
+    private Scanner scanner;
+    private PrintStream out;
 
-    public void run() throws IllegalFormatException{
+    public AnswerIs42(InputStream in, PrintStream out) {
+        storedQuestions = new HashMap<>();
+        scanner = new Scanner(in);
+        this.out = out;
+    }
+
+    public void run() throws IllegalFormatException {
         System.out.println("Ask a question or add new one: ");
         // get next input string
         String input = scanner.nextLine();
@@ -35,33 +44,39 @@ public class AnswerIs42 {
                 }
                 printAnswers(answers);
             }
-        // TODO: remove all other types of exceptions make both Question and Answer throw IllegalArgumentException
         } catch (IllegalArgumentException | InvalidQuestionException | InvalidAnswerException e) {
-            System.err.println(e.getMessage());
+            out.println(e.getMessage());
         }
     }
 
     private void printAnswers(final List<Answer> answers) {
         for (Answer answer: answers) {
-            System.out.println("* " + answer);
+            out.println("* " + answer);
         }
     }
 
+    /**
+     * Extracts tokens enclosed by quotes from the latent string, and returns a list containing answers of values
+     * equal to
+     * the matched tokens.
+     * @param input - latent string where tokens can be extracted from
+     * @return answers - List of containing answers of values matching the found tokens
+     */
     private List<Answer> extractAnswers(final String input) {
         List<Answer> answers = new ArrayList<>();
-        String rawPattern = "(?<=\")[^\"]*(?=\")"; // any character that's preceded and followed by "
-        Matcher matcher = Pattern.compile(rawPattern).matcher(input);
-        // TODO: while loop could be written in a better way
-        int i = 0;
-        while (matcher.find()) {
-            if (i%2 == 0) { // get only every second match
-                try {
-                    Answer answer = new Answer(matcher.group());
-                    answers.add(answer);
-                } catch (InvalidAnswerException e) {
-                }
+        final String pattern = "\"[^\"]+\"";
+        String[] tokens = Pattern.compile(pattern)
+                .matcher(input)
+                .results()
+                .map(MatchResult::group)
+                .map(s -> s.substring(1, s.length()-1)) // strip leading & trailing quotes
+                .toArray(String[]::new);
+        for (String token : tokens) {
+            try {
+                Answer answer = new Answer(token);
+                answers.add(answer);
+            } catch (InvalidAnswerException ignored) {
             }
-            i++;
         }
         return answers;
     }
@@ -73,9 +88,8 @@ public class AnswerIs42 {
      * <p>e.g. " ? Hello world   ??" --> "Hello world"
      * @param input input string passed from the command line
      * @return String array whose elements are substrings starting and ending with a '?'
-     * @throws IllegalArgumentException if stripped string is empty.
      */
-    private String[] processInput(final String input) throws IllegalArgumentException {
+    private String[] processInput(final String input) {
         String stripped = StringUtils.strip(input, "? ");
         return stripped.split("\\?"); // split by '?'
     }

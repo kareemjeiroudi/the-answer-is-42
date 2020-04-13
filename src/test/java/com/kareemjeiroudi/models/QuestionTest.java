@@ -1,12 +1,12 @@
 package com.kareemjeiroudi.models;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Random;
 
@@ -39,20 +39,48 @@ public class QuestionTest {
             .toString();
     }
 
-    @Test(expected = InvalidQuestionException.class)
-    public void ConstructorThrowsInvalidQuestionExceptionWhenMaxLengthIsExceeded() throws InvalidQuestionException {
-        // generate a randomString whose minimum length is the maximum allowed length to a question
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+    @Test
+    public void constructorThrowsInvalidQuestionExceptionWhenMaxLengthIsExceeded() throws InvalidQuestionException {
+        // generate a randomString whose length is between min and max allowed length (255) to a question
+        expectedEx.expect(InvalidQuestionException.class);
+        expectedEx.expectMessage(String.format("Question is too long! Max length is %d", Question.MAX_LENGTH));
         String randomString = randomString(Question.MAX_LENGTH, 1000);
+        new Question(randomString);
+        randomString = randomString(Answer.MAX_LENGTH, 1000);
         new Question(randomString);
     }
 
     @Test
-    public void ConstructorWorksGivenOkayStringLength() throws InvalidQuestionException {
-        // generate a randomString whose minimum length is the maximum allowed length to a question
-        String randomString = randomString(0, Question.MAX_LENGTH);
+    public void constructorThrowsInvalidQuestionExceptionWhenQuestionStatementIsBlank() throws InvalidQuestionException {
+        expectedEx.expect(InvalidQuestionException.class);
+        expectedEx.expectMessage("Questions must contain at least one character!");
+        String questionStatement = "";
+        new Question(questionStatement);
+    }
+
+    @Test
+    public void constructorThrowsInvalidQuestionExceptionWhenQuestionStatementIsEmpty() throws InvalidQuestionException {
+        expectedEx.expect(InvalidQuestionException.class);
+        expectedEx.expectMessage("Questions must contain at least one character!");
+        String questionStatement = "   ";
+        new Question(questionStatement);
+    }
+
+    @Test
+    public void constructorWorksGivenStringOfArbitraryLengthBetweenMinAndMax() throws InvalidQuestionException {
+        // generate a randomString whose length is between 1 and max allowed length (255)
+        String randomString = randomString(1, Question.MAX_LENGTH);
         Question question = new Question(randomString);
-        assertThat(question, instanceOf(Question.class)); // more readable, less specific
-        assertEquals(Question.class, question.getClass()); // less readable, more specific
+        assertEquals(Question.class, question.getClass());
+        assertEquals(question.toString(), randomString);
+
+        randomString = randomString(1, Answer.MAX_LENGTH);
+        question = new Question(randomString);
+        assertEquals(Question.class, question.getClass());
+        assertEquals(question.toString(), randomString);
     }
 
 }

@@ -1,7 +1,5 @@
 package com.kareemjeiroudi.models;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
@@ -45,8 +43,8 @@ public class AnswerTest {
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
-    public void ConstructorThrowsInvalidAnswerExceptionWhenMaxLengthIsExceeded() throws InvalidAnswerException {
-        // generate a randomString whose minimum length is the maximum allowed length to an answer
+    public void constructorThrowsInvalidAnswerExceptionWhenMaxLengthIsExceeded() throws InvalidAnswerException {
+        // generate a randomString whose length is between min and max allowed length (255) to an answer
         expectedEx.expect(InvalidAnswerException.class);
         expectedEx.expectMessage(String.format("Answer is too long! max length %d", Answer.MAX_LENGTH));
         String randomString = randomString(Answer.MAX_LENGTH, 1000);
@@ -56,12 +54,32 @@ public class AnswerTest {
     }
 
     @Test
-    public void ConstructorWorksGivenOkayStringLength() throws InvalidAnswerException {
-        // generate a randomString whose minimum length is the maximum allowed length to an answer
-        String randomString = randomString(0, Answer.MAX_LENGTH);
-        Answer answer = new Answer(randomString);
-        assertThat(answer, instanceOf(Answer.class)); // more readable, less specific
-        assertEquals(Answer.class, answer.getClass()); // less readable, more specific
+    public void constructorThrowsInvalidAnswerExceptionWhenGivenStringIsEmpty() throws InvalidAnswerException {
+        expectedEx.expect(InvalidAnswerException.class);
+        expectedEx.expectMessage("Answer must contain at least one character!");
+        String s = "";
+        new Answer(s);
     }
 
+    @Test
+    public void constructorThrowsInvalidAnswerExceptionWhenGivenStringIsBlank() throws InvalidAnswerException {
+        expectedEx.expect(InvalidAnswerException.class);
+        expectedEx.expectMessage("Answer must contain at least one character!");
+        String s = "    ";
+        new Answer(s);
+    }
+
+    @Test
+    public void constructorWorksGivenStringOfArbitraryLengthBetweenMinAndMax() throws InvalidAnswerException {
+        // generate a randomString whose length is between 1 and max allowed length (255)
+        String randomString = randomString(1, Answer.MAX_LENGTH);
+        Answer answer = new Answer(randomString);
+        assertEquals(Answer.class, answer.getClass()); // less readable, more specific
+        assertEquals(answer.toString(), randomString);
+
+        randomString = randomString(1, Answer.MAX_LENGTH);
+        answer = new Answer(randomString);
+        assertEquals(Answer.class, answer.getClass());
+        assertEquals(answer.toString(), randomString);
+    }
 }
