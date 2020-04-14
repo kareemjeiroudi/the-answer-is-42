@@ -2,25 +2,17 @@ package com.kareemjeiroudi.models;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 public class AnswerIs42 {
-    private Map<Question, List<Answer>> storedQuestions;
-    private Scanner scanner;
-    private PrintStream out;
+    private Map<Question, List<Answer>> storedQuestions = new HashMap<>();
+    private Scanner scanner = new Scanner(System.in);
 
-    public AnswerIs42(InputStream in, PrintStream out) {
-        storedQuestions = new HashMap<>();
-        scanner = new Scanner(in);
-        this.out = out;
-    }
 
     public void run() throws IllegalFormatException {
-        System.out.println("Ask a question or add new one: ");
+        System.out.println("Ask a question or add new one:");
         // get next input string
         String input = scanner.nextLine();
         try{
@@ -40,18 +32,18 @@ public class AnswerIs42 {
                 List<Answer> answers = storedQuestions.get(question);
                 if (answers == null) {
                     answers = new ArrayList<>();
-                    answers.add(new Answer("the answer to life, universe and everything is 42"));
+                    answers.add(new Answer("The answer to life, universe and everything is 42"));
                 }
                 printAnswers(answers);
             }
         } catch (IllegalArgumentException | InvalidQuestionException | InvalidAnswerException e) {
-            out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
     private void printAnswers(final List<Answer> answers) {
         for (Answer answer: answers) {
-            out.println("* " + answer);
+            System.out.println("* " + answer);
         }
     }
 
@@ -64,7 +56,7 @@ public class AnswerIs42 {
      */
     private List<Answer> extractAnswers(final String input) {
         List<Answer> answers = new ArrayList<>();
-        final String pattern = "\"[^\"]+\"";
+        final String pattern = "\"[^\"]*\"";
         String[] tokens = Pattern.compile(pattern)
                 .matcher(input)
                 .results()
