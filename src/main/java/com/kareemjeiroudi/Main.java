@@ -12,13 +12,38 @@ become significantly larger later in development, one would be able to edit or e
 them easily.
  */
 
+import com.kareemjeiroudi.models.Answer;
 import com.kareemjeiroudi.models.AnswerIs42;
+import com.kareemjeiroudi.models.InvalidQuestionException;
+import com.kareemjeiroudi.processes.Path;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
+
+  private static Scanner scanner = new Scanner(System.in);
+
   public static void main(String[] args) {
     AnswerIs42 ai42 = new AnswerIs42();
+
     while (true) { // no terminal condition
-      ai42.run();
+      System.out.println("Ask a question or add new one:");
+      String input = scanner.nextLine();
+      try {
+        List<Answer> answers = ai42.newTurn(input);
+        if (ai42.getPath() == Path.ASKING_QUESTION) {
+          printAnswers(answers);
+        }
+      } catch (InvalidQuestionException iqe) {
+        System.err.println(iqe.getMessage());
+      }
+    }
+  }
+
+  private static void printAnswers(final List<Answer> answers) {
+    for (Answer answer: answers) {
+      System.out.println("* " + answer);
     }
   }
 }

@@ -158,7 +158,7 @@ public class AnswerIs42Test {
         System.setOut(printStream);
         // initialize a new AnswerIs42 object with new System.in and System.out
         AnswerIs42 ai42 = new AnswerIs42();
-        ai42.run();  // reads user input from the inputStream with scanner.nextLine()
+        ai42.newTurn();  // reads user input from the inputStream with scanner.nextLine()
 
         assertEquals("Ask a question or add new one:\n" +
                         "* The answer to life, universe and everything is 42\n",
@@ -166,8 +166,8 @@ public class AnswerIs42Test {
         );
 
         outputStream.reset(); // clear output stream
-        // run again
-        ai42.run();  // reads second user input from the inputStream
+        // newTurn again
+        ai42.newTurn();  // reads second user input from the inputStream
 
         assertEquals("Ask a question or add new one:\n" +
                         "* The answer to life, universe and everything is 42\n",
@@ -189,7 +189,7 @@ public class AnswerIs42Test {
 
         AnswerIs42 ai42 = new AnswerIs42();
         // add the question
-        ai42.run();  // reads user input from the inputStream at scanner.nextLine()
+        ai42.newTurn();  // reads user input from the inputStream at scanner.nextLine()
 
         /*
         No specific message should be printed when storing a question. Therefore, current output stream should look
@@ -198,7 +198,7 @@ public class AnswerIs42Test {
         assertEquals("Ask a question or add new one:\n", outputStream.toString());
 
         outputStream.reset(); // clear previously "printed" output
-        ai42.run(); // query now
+        ai42.newTurn(); // query now
 
         assertEquals("Ask a question or add new one:\n" +
                 "* a\n" +
