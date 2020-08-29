@@ -1,4 +1,4 @@
-package com.kareemjeiroudi.models;
+package com.kareemjeiroudi.model;
 
 public class InvalidAnswerException extends Exception {
     public InvalidAnswerException(String message) {

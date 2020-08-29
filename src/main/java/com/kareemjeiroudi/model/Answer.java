@@ -1,4 +1,4 @@
-package com.kareemjeiroudi.models;
+package com.kareemjeiroudi.model;
 
 public class Answer {
     public static final int MAX_LENGTH = 255;

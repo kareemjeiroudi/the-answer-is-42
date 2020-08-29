@@ -1,4 +1,4 @@
-package com.kareemjeiroudi.processes;
+package com.kareemjeiroudi.tokens;
 
 public enum Path {
   ADDING_QUESTION, ASKING_QUESTION, UNDEFINED

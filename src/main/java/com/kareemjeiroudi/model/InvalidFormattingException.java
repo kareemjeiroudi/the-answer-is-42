@@ -1,7 +1,7 @@
-package com.kareemjeiroudi.models;
+package com.kareemjeiroudi.model;
 
 public class InvalidFormattingException extends IllegalArgumentException {
-  InvalidFormattingException(String message) {
+  public InvalidFormattingException(String message) {
     super(message);
   }
 }

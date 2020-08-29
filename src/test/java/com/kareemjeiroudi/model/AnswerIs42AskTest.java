@@ -1,5 +1,6 @@
-package com.kareemjeiroudi.models;
+package com.kareemjeiroudi.model;
 
+import com.kareemjeiroudi.chiclet.AnswerIs42Ask;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,9 +17,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 
-public class AnswerIs42Test {
+public class AnswerIs42AskTest {
 
-    private AnswerIs42 ai42;
+    private AnswerIs42Ask ai42;
     private static Method processInput;
     private static Method extractAnswers;
 
@@ -31,9 +32,9 @@ public class AnswerIs42Test {
             /*
             Generally said, it's a bad practice to test private methods. However, for the sake of fun.
              */
-            processInput = AnswerIs42.class.getDeclaredMethod("processInput", String.class);
+            processInput = AnswerIs42Ask.class.getDeclaredMethod("processInput", String.class);
             processInput.setAccessible(true);
-            extractAnswers = AnswerIs42.class.getDeclaredMethod("extractAnswers", String.class);
+            extractAnswers = AnswerIs42Ask.class.getDeclaredMethod("extractAnswers", String.class);
             extractAnswers.setAccessible(true);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -42,7 +43,7 @@ public class AnswerIs42Test {
 
     @Before
     public void init() {
-        ai42 = new AnswerIs42();
+        ai42 = new AnswerIs42Ask();
     }
 
     @Test
@@ -156,8 +157,8 @@ public class AnswerIs42Test {
         // set a custom System.in and System.out
         System.setIn(inputStream);
         System.setOut(printStream);
-        // initialize a new AnswerIs42 object with new System.in and System.out
-        AnswerIs42 ai42 = new AnswerIs42();
+        // initialize a new AnswerIs42Ask object with new System.in and System.out
+        AnswerIs42Ask ai42 = new AnswerIs42Ask();
         ai42.newTurn();  // reads user input from the inputStream with scanner.nextLine()
 
         assertEquals("Ask a question or add new one:\n" +
@@ -187,7 +188,7 @@ public class AnswerIs42Test {
         System.setIn(inputStream);
         System.setOut(printStream);
 
-        AnswerIs42 ai42 = new AnswerIs42();
+        AnswerIs42Ask ai42 = new AnswerIs42Ask();
         // add the question
         ai42.newTurn();  // reads user input from the inputStream at scanner.nextLine()
 

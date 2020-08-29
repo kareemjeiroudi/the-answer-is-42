@@ -1,14 +1,13 @@
-package com.kareemjeiroudi.models;
+package com.kareemjeiroudi.model;
 
-
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class AnswerTest {
