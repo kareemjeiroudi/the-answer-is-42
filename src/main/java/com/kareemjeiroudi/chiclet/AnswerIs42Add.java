@@ -21,7 +21,7 @@ public class AnswerIs42Add implements AnswerIs42 {
 
   @Override
   public Response handle() throws InvalidQuestionException {
-    String[] split = inputProcessor.splitAtChar("?");
+    String[] split = inputProcessor.splitAt("\\?");
     Question question = new Question(split[0]);
 
     String[] tokens = inputProcessor.parsePattern("\"[^\"]*\"", split[1]);

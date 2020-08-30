@@ -3,12 +3,13 @@ package com.kareemjeiroudi.storage;
 import com.kareemjeiroudi.model.Answer;
 import com.kareemjeiroudi.model.Question;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ShortTermMemory implements Memory {
 
-  private Map<Question, List<Answer>> record;
+  private Map<Question, List<Answer>> record = new HashMap<>();
 
 
   @Override

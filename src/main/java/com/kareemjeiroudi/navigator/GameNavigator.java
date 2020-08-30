@@ -34,7 +34,7 @@ public class GameNavigator {
   public Response newTurn(String userInput) throws IllegalFormatException, InvalidQuestionException {
     inputProcessor.stripValue(" ?", userInput);
 
-    String[] split = inputProcessor.splitAtChar("\\?");
+    String[] split = inputProcessor.splitAt("\\?");
     Path path = determinePath(split);
     AnswerIs42Factory factory = new AnswerIs42Factory();
     AnswerIs42 ai42 = null;

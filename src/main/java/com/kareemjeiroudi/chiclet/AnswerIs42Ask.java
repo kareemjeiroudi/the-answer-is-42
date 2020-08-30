@@ -9,17 +9,12 @@ import com.kareemjeiroudi.storage.Memory;
 import com.kareemjeiroudi.tokens.InputProcessor;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AnswerIs42Ask implements AnswerIs42 {
 
-    private Map<Question, List<Answer>> storedQuestions = new HashMap<>();
-
-    private InputProcessor inputProcessor;
-
     private Memory memory;
+    private InputProcessor inputProcessor;
 
     public AnswerIs42Ask() {
          inputProcessor = new InputProcessor();
@@ -33,7 +28,7 @@ public class AnswerIs42Ask implements AnswerIs42 {
      */
     @Override
     public Response handle() {
-        String questionStatement = inputProcessor.splitAtChar("\\?")[0];
+        String questionStatement = inputProcessor.splitAt("\\?")[0];
         List<Answer> answers = Collections.emptyList();
         try {
             Question question = new Question(questionStatement);
