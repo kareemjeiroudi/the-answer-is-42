@@ -15,11 +15,13 @@ import java.util.List;
 
 public class GameNavigator {
 
+  private final AnswerIs42Factory factory;
   private Memory memory;
   private InputProcessor inputProcessor;
 
 
   public GameNavigator(Memory memory) {
+    factory = new AnswerIs42Factory();
     this.memory = memory;
     this.inputProcessor = new InputProcessor();
   }
@@ -36,7 +38,6 @@ public class GameNavigator {
 
     String[] split = inputProcessor.splitAt("\\?");
     Path path = determinePath(split);
-    AnswerIs42Factory factory = new AnswerIs42Factory();
     AnswerIs42 ai42 = null;
     try {
       ai42 = factory.construct(path)
